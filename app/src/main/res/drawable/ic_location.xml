@@ -1,0 +1,11 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+        android:width="38dp"
+        android:height="55dp"
+        android:viewportWidth="38.0"
+        android:viewportHeight="55.0">
+    <path
+        android:fillColor="#cd3700"
+        android:pathData="M19.18,12.06c-3.84,0 -6.97,3.15 -6.97,7.03c0,3.88 3.13,7.03 6.97,7.03c3.84,0 6.97,-3.15 6.97,-7.03C26.15,15.21 23.02,12.06 19.18,12.06zM19.18,24.11c-2.74,0 -4.98,-2.25 -4.98,-5.02s2.23,-5.02 4.98,-5.02s4.98,2.25 4.98,5.02S21.92,24.11 19.18,24.11zM32.5,5.64C28.9,2.01 24.1,0 19,0c-5.1,0 -9.9,2 -13.5,5.64c-6.67,6.73 -7.5,19.4 -1.8,27.07L19,54.99l15.27,-22.25C40,25.04 39.17,12.38 32.5,5.64zM32.66,31.57L19,51.47L5.32,31.54C0.14,24.58 0.88,13.14 6.91,7.06C10.14,3.81 14.43,2.01 19,2.01c4.57,0 8.86,1.79 12.09,5.05C37.12,13.14 37.86,24.58 32.66,31.57z"/>
+</vector>
+
+    <!-- Icon made by Madebyoliver (http://www.flaticon.com/authors/madebyoliver), retrieved from flaticon.com licensed by Creative Commons by 3.0 -->

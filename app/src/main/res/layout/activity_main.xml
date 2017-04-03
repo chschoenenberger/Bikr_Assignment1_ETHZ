@@ -1,0 +1,295 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorPrimaryDark"
+    tools:context="ch.ethz.ikg.assignment1.MainActivity">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fillViewport="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_above="@+id/toggleButton">
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            tools:layout_editor_absoluteX="8dp"
+            tools:layout_editor_absoluteY="8dp">
+
+            <ImageView
+                android:id="@+id/imageViewHeading"
+                android:layout_width="125dp"
+                android:layout_height="125dp"
+                app:srcCompat="@drawable/ic_compass"
+                android:layout_marginRight="30dp"
+                android:layout_marginEnd="30dp"
+                android:layout_marginTop="15dp"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
+                 />
+
+            <TextView
+                android:id="@+id/textViewHeading"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingBottom="5dp"
+                android:paddingTop="5dp"
+                android:text="@string/nameHeading"
+                android:textSize="22sp"
+                android:textStyle="bold"
+                android:textColor="@color/colorAccent"
+                android:layout_below="@+id/imageViewHeading"
+                android:layout_alignLeft="@+id/imageViewHeading"
+                android:layout_alignStart="@+id/imageViewHeading"
+                android:layout_marginLeft="13dp"
+                android:layout_marginStart="13dp" />
+
+            <TextView
+                android:id="@+id/valueHeading"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingBottom="5dp"
+                android:paddingTop="5dp"
+                android:text="@string/headingValue"
+                android:textSize="18sp"
+                android:textColor="@color/colorAccent"
+                android:layout_below="@+id/textViewHeading"
+                android:layout_alignLeft="@+id/textViewHeading"
+                android:layout_alignStart="@+id/textViewHeading" />
+
+            <TextView
+                android:id="@+id/headingDegree"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingBottom="5dp"
+                android:paddingTop="5dp"
+                android:text="@string/headingDegree"
+                android:textSize="18sp"
+                android:textColor="@color/colorAccent"
+                android:layout_below="@+id/valueHeading"
+                android:layout_alignLeft="@+id/valueHeading"
+                android:layout_alignStart="@+id/valueHeading" />
+
+            <ImageView
+                android:id="@+id/imageViewSpeed"
+                android:layout_width="125dp"
+                android:layout_height="125dp"
+                app:srcCompat="@drawable/ic_speed"
+                android:layout_marginLeft="30dp"
+                android:layout_marginStart="30dp"
+                android:layout_marginTop="15dp"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true" />
+
+            <TextView
+                android:id="@+id/textViewSpeed"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingBottom="5dp"
+                android:paddingTop="5dp"
+                android:text="@string/nameSpeed"
+                android:textSize="22sp"
+                android:textStyle="bold"
+                android:textColor="@color/colorAccent"
+                android:layout_below="@+id/imageViewSpeed"
+                android:layout_alignLeft="@+id/imageViewSpeed"
+                android:layout_alignStart="@+id/imageViewSpeed"
+                android:layout_marginLeft="24dp"
+                android:layout_marginStart="24dp" />
+
+            <TextView
+                android:id="@+id/valueSpeed"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingBottom="23dp"
+                android:paddingTop="23dp"
+                android:text="@string/valueSpeed"
+                android:textSize="18sp"
+                android:textColor="@color/colorAccent"
+                android:layout_below="@+id/textViewSpeed"
+                android:layout_alignLeft="@+id/textViewSpeed"
+                android:layout_alignStart="@+id/textViewSpeed" />
+
+            <ImageView
+                android:id="@+id/imageViewHeight"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:paddingTop="10sp"
+                android:paddingBottom="5sp"
+                app:srcCompat="@drawable/ic_mountain_range"
+                android:layout_below="@+id/valueSpeed"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true" />
+
+            <TextView
+                android:id="@+id/textViewHeight"
+                android:layout_width="125dp"
+                android:layout_height="wrap_content"
+                android:paddingBottom="5dp"
+                android:paddingTop="5dp"
+                android:text="@string/nameHeight"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:textColor="@color/colorAccent"
+                android:layout_alignBottom="@+id/imageViewHeight"
+                android:layout_toRightOf="@+id/imageViewHeight"
+                android:layout_toEndOf="@+id/imageViewHeight"
+                android:layout_marginBottom="11dp" />
+
+            <TextView
+                android:id="@+id/valueHeight"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingBottom="5dp"
+                android:paddingTop="5dp"
+                android:text="@string/height"
+                android:textSize="15sp"
+                android:textColor="@color/colorAccent"
+                android:layout_alignBaseline="@+id/textViewHeight"
+                android:layout_alignBottom="@+id/textViewHeight"
+                android:layout_toRightOf="@+id/textViewHeight"
+                android:layout_toEndOf="@+id/textViewHeight" />
+
+            <ImageView
+                android:id="@+id/imageViewAcceleration"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:paddingTop="5sp"
+                android:paddingBottom="5sp"
+                app:srcCompat="@drawable/ic_acceleration"
+                android:layout_below="@+id/imageViewHeight"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true" />
+
+            <TextView
+                android:id="@+id/textViewAcceleration"
+                android:layout_width="125dp"
+                android:layout_height="wrap_content"
+                android:paddingBottom="5dp"
+                android:paddingTop="5dp"
+                android:text="@string/nameAcceleration"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:textColor="@color/colorAccent"
+                android:layout_alignBottom="@+id/imageViewAcceleration"
+                android:layout_toRightOf="@+id/imageViewAcceleration"
+                android:layout_toEndOf="@+id/imageViewAcceleration"
+                android:layout_marginBottom="13dp" />
+
+            <TextView
+                android:id="@+id/valueAcceleration"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingBottom="5dp"
+                android:paddingTop="5dp"
+                android:text="@string/acceleration"
+                android:textSize="15sp"
+                android:textColor="@color/colorAccent"
+                android:layout_alignBaseline="@+id/textViewAcceleration"
+                android:layout_alignBottom="@+id/textViewAcceleration"
+                android:layout_toRightOf="@+id/textViewAcceleration"
+                android:layout_toEndOf="@+id/textViewAcceleration"/>
+
+            <ImageView
+                android:id="@+id/imageViewLocation"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:paddingTop="5sp"
+                android:paddingBottom="5sp"
+                app:srcCompat="@drawable/ic_location"
+                android:layout_below="@+id/imageViewAcceleration"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true" />
+
+            <TextView
+                android:id="@+id/textViewLocation"
+                android:layout_width="125dp"
+                android:layout_height="wrap_content"
+                android:paddingBottom="5dp"
+                android:paddingTop="5dp"
+                android:text="@string/nameLocation"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:textColor="@color/colorAccent"
+                android:layout_alignBottom="@+id/imageViewLocation"
+                android:layout_toRightOf="@+id/imageViewLocation"
+                android:layout_toEndOf="@+id/imageViewLocation"
+                android:layout_marginBottom="13dp" />
+
+            <TextView
+                android:id="@+id/valueLocation"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingBottom="5dp"
+                android:paddingTop="5dp"
+                android:text="@string/location"
+                android:textSize="15sp"
+                android:textColor="@color/colorAccent"
+                android:layout_alignBaseline="@+id/textViewLocation"
+                android:layout_alignBottom="@+id/textViewLocation"
+                android:layout_toRightOf="@+id/textViewLocation"
+                android:layout_toEndOf="@+id/textViewLocation"/>
+
+            <ImageView
+                android:id="@+id/imageViewTemperature"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:paddingTop="5sp"
+                android:paddingBottom="5sp"
+                app:srcCompat="@drawable/ic_thermometer_outlined_symbol_of_stroke"
+                android:layout_below="@+id/imageViewLocation"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true" />
+
+            <TextView
+                android:id="@+id/textViewTemperature"
+                android:layout_width="125dp"
+                android:layout_height="wrap_content"
+                android:paddingBottom="5dp"
+                android:paddingTop="5dp"
+                android:text="@string/nameTemperature"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:textColor="@color/colorAccent"
+                android:layout_alignBottom="@+id/imageViewTemperature"
+                android:layout_toRightOf="@+id/imageViewTemperature"
+                android:layout_toEndOf="@+id/imageViewTemperature"
+                android:layout_marginBottom="13dp" />
+
+            <TextView
+                android:id="@+id/valueTemperature"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingBottom="5dp"
+                android:paddingTop="5dp"
+                android:text="@string/temp"
+                android:textSize="15sp"
+                android:textColor="@color/colorAccent"
+                android:layout_alignBaseline="@+id/textViewTemperature"
+                android:layout_alignBottom="@+id/textViewTemperature"
+                android:layout_toRightOf="@+id/textViewTemperature"
+                android:layout_toEndOf="@+id/textViewTemperature" />
+
+        </RelativeLayout>
+    </ScrollView>
+
+    <ToggleButton
+        android:id="@+id/toggleButton"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_alignParentBottom="true"
+        android:hapticFeedbackEnabled="true"
+        android:text="@string/recording"
+        android:textOff="@string/start_recording"
+        android:textOn="@string/stop_recording" />
+
+</RelativeLayout>

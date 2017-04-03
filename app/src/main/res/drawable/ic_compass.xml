@@ -1,0 +1,6 @@
+<vector android:height="24dp" android:viewportHeight="16.0"
+    android:viewportWidth="16.0" android:width="24dp" xmlns:android="http://schemas.android.com/apk/res/android">
+    <path android:fillColor="#cd3700" android:pathData="M2.343,2.343c-3.111,3.111 -3.11,8.203 0,11.313c3.111,3.111 8.203,3.111 11.314,0s3.111,-8.202 0,-11.313C10.546,-0.768 5.454,-0.768 2.343,2.343zM11.536,12.949L8,9.414l-3.536,3.535L8,2.343L11.536,12.949z"/>
+</vector>
+
+    <!-- Icon made by Vaadin (http://www.flaticon.com/authors/vaadin), retrieved from flaticon.com licensed by Creative Commons by 3.0 -->

@@ -1,0 +1,21 @@
+<resources>
+    <string name="app_name">Bikr - Assignment1 (ETHZ)</string>
+
+    <string name="headingValue">N/A</string>
+    <string name="valueSpeed">N/A</string>
+    <string name="height">N/A</string>
+    <string name="acceleration">N/A</string>
+    <string name="location">N/A</string>
+    <string name="temp">N/A</string>
+    <string name="recording">recording</string>
+    <string name="start_recording">Start recording</string>
+    <string name="stop_recording">Stop recording</string>
+    <string name="nameTemperature">Temperature:</string>
+    <string name="nameLocation">Location:</string>
+    <string name="nameAcceleration">Acceleration:</string>
+    <string name="nameHeight">Height:</string>
+    <string name="nameSpeed">Speed:</string>
+    <string name="headingDegree">N/A</string>
+    <string name="nameHeading">Heading:</string>
+
+</resources>
