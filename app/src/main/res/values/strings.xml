@@ -17,5 +17,6 @@
     <string name="nameSpeed">Speed:</string>
     <string name="headingDegree">N/A</string>
     <string name="nameHeading">Heading:</string>
+    <string name="averageSpeed">N/A</string>
 
 </resources>

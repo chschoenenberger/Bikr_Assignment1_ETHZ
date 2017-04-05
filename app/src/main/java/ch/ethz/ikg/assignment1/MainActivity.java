@@ -69,6 +69,11 @@ import java.io.PrintWriter;
  * accessed and processed. Furthermore, the recording of a GPS track with storage into a CSV file
  * is possible.
  *
+ * A drawback of the application is, that the LocationListener and the SensorEventListener are
+ * included in the main activity. For the sake of clarity and clean design, they should be
+ * implemented in individual classes which can then be accessed by the main activity. This
+ * should be implemented in a next step.
+ *
  * @author Christoph Schönenberger
  * @version 1.1
  * @since 04.04.2017
@@ -76,6 +81,17 @@ import java.io.PrintWriter;
 
 public class MainActivity extends AppCompatActivity implements LocationListener, SensorEventListener {
 
+    // the ALPHA value is needed for the low-pass filter
+    static final float ALPHA = 0.25f;
+    // Message to be displayed if sensor is not available
+    private final static String NOT_SUPPORTED = "Sensor not available";
+    // Create arrays to store gravity and magnetic field sensor values that are used to calculate heading
+    float[] gravity;
+    float[] geomagnetic;
+    // Create Location which stores last known location
+    Location oldLoc = null;
+    // create variable to store old bearing value, used for rotation
+    double oldBearingDegree = 0;
     // Create LocationManager to access GPS measurements
     private LocationManager locationManager;
     // Create SensorManager to access sensor measurements
@@ -84,13 +100,6 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
     private Sensor tempSensor;
     private Sensor accelerometer;
     private Sensor magnetometer;
-    // Message to be displayed if sensor is not available
-    private final static String NOT_SUPPORTED = "Sensor not available";
-
-    // Create arrays to store gravity and magnetic field sensor values that are used to calculate heading
-    float[] gravity;
-    float[] geomagnetic;
-
     // Create TextViews that display information
     private TextView headingTxtView;
     private TextView headingDegreeTxtView;
@@ -100,21 +109,8 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
     private TextView locationTxtView;
     private TextView temperatureTxtView;
     private ImageView headingImageView;
-
     private ToggleButton toggle;
     private boolean record;
-
-    // Create Location which stores last known location
-    Location oldLoc = null;
-    // create variable to store old bearing value, used for rotation
-    double oldBearingDegree = 0;
-
-    // the ALPHA value is needed for the low-pass filter
-    static final float ALPHA = 0.5f; // if ALPHA = 1 OR 0, no filter applies.
-
-    //reference streams
-    private OutputStream outputStream;
-    private PrintStream printStream;
 
     /**
      * Method that is called when activity is initialized. All UI elements are loaded and referenced.
@@ -244,8 +240,8 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         if (tempSensor != null) {
             sensorManager.registerListener(this, tempSensor, 1000000);
         }
-        sensorManager.registerListener(this, accelerometer, 1000000);
-        sensorManager.registerListener(this, magnetometer, 1000000);
+        sensorManager.registerListener(this, accelerometer, 3000000);
+        sensorManager.registerListener(this, magnetometer, 3000000);
     }
 
     /**
