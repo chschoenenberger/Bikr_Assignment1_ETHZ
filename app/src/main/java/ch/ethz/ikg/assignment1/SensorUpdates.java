@@ -14,9 +14,9 @@ import java.util.Observable;
  * This class implements the SensorEventListener which receives updates from several sensors.
  * The class implements the Observable interface so that the main activity can observe sensor
  * changes. The arguments needed in the MainActivity are passed as an String[4] of the form:
- * {(String)Heading, (String)HeadingDegree, (Float)HeadingDegree, (String) Temperature}
- * The String values can be directly shown in the interface. The (Float) HeadingDegree are needed
- * for the rotation animation of the imageview in the main activity.
+ * {Heading, HeadingDegree, HeadingDegreeNumb, Temperature} The values Heading, HeadingDegree and
+ * Temperature can be directly shown in the interface. The HeadingDegreeNumb will be converted
+ * to float and used for the rotation animation of the imageview in the main activity.
  */
 
 public class SensorUpdates extends Observable implements SensorEventListener {
