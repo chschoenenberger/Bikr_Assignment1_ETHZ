@@ -57,15 +57,15 @@ import java.util.Observer;
  * To obtain this information, GPS-, acceleration-, magnetic field- and temperature sensor are
  * accessed and processed. Furthermore, the recording of a GPS track with storage into a CSV file
  * is possible.
- *
+ * <p>
  * A drawback of the application is, that the LocationListener and the SensorEventListener are
  * included in the main activity. For the sake of clarity and clean design, they should be
  * implemented in individual classes which can then be accessed by the main activity. This
  * should be implemented in a next step.
  *
  * @author Christoph Schönenberger
- * @version 1.1
- * @since 04.04.2017
+ * @version 1.2
+ * @since 06.04.2017
  */
 
 public class MainActivity extends AppCompatActivity implements Observer {

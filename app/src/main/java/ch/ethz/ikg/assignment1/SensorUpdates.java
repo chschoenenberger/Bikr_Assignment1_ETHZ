@@ -173,6 +173,7 @@ public class SensorUpdates extends Observable implements SensorEventListener {
         return output;
     }
 
+
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
 
