@@ -19,21 +19,9 @@
 
 package ch.ethz.ikg.assignment1;
 
-import android.Manifest;
-import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.hardware.Sensor;
-import android.hardware.SensorEvent;
-import android.hardware.SensorEventListener;
-import android.hardware.SensorManager;
-import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Environment;
-import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -50,9 +38,10 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileReader;
-import java.io.OutputStream;
-import java.io.PrintStream;
 import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.Observable;
+import java.util.Observer;
 
 /**
  * This application was created in the context of the course Mobile GIS and Location Based Services
@@ -79,27 +68,12 @@ import java.io.PrintWriter;
  * @since 04.04.2017
  */
 
-public class MainActivity extends AppCompatActivity implements LocationListener, SensorEventListener {
+public class MainActivity extends AppCompatActivity implements Observer {
 
-    // the ALPHA value is needed for the low-pass filter
-    static final float ALPHA = 0.25f;
-    // Message to be displayed if sensor is not available
-    private final static String NOT_SUPPORTED = "Sensor not available";
-    // Create arrays to store gravity and magnetic field sensor values that are used to calculate heading
-    float[] gravity;
-    float[] geomagnetic;
-    // Create Location which stores last known location
-    Location oldLoc = null;
     // create variable to store old bearing value, used for rotation
-    double oldBearingDegree = 0;
-    // Create LocationManager to access GPS measurements
-    private LocationManager locationManager;
-    // Create SensorManager to access sensor measurements
-    private SensorManager sensorManager;
-    // Create temperature, acceleration and magnetic field sensors
-    private Sensor tempSensor;
-    private Sensor accelerometer;
-    private Sensor magnetometer;
+    float oldBearingDegree = 0f;
+    private LocationUpdates locationUpdates = new LocationUpdates();
+    private SensorUpdates sensorUpdates = new SensorUpdates();
     // Create TextViews that display information
     private TextView headingTxtView;
     private TextView headingDegreeTxtView;
@@ -125,6 +99,9 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         android.support.v7.app.ActionBar supportActionBar = getSupportActionBar();
         supportActionBar.setDisplayShowHomeEnabled(true);
         supportActionBar.setIcon(R.mipmap.ic_launcher);
+
+        locationUpdates.addObserver(this);
+        sensorUpdates.addObserver(this);
 
         // Reference UI elements
         headingTxtView = (TextView) findViewById(R.id.valueHeading);
@@ -165,61 +142,8 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
     @Override
     protected void onStart() {
         super.onStart();
-
-        locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
-
-        if (ActivityCompat.checkSelfPermission(this,
-                Manifest.permission.ACCESS_FINE_LOCATION) !=
-                PackageManager.PERMISSION_GRANTED &&
-                ActivityCompat.checkSelfPermission(this,
-                        Manifest.permission.ACCESS_COARSE_LOCATION) !=
-                        PackageManager.PERMISSION_GRANTED) {
-            // We don't have the necessary permissions, so we have to request them.
-            ActivityCompat.requestPermissions(this,
-                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION,
-                            Manifest.permission.ACCESS_COARSE_LOCATION,
-                            Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
-        } else {
-            // We have the necessary permissions, and can request the
-            // location updates.
-            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 500, 2, this);
-        }
-
-        // get temperature sensor, if it is supported by current version.
-        sensorManager = (SensorManager) this.getSystemService(Context.SENSOR_SERVICE);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
-            tempSensor = sensorManager.getDefaultSensor(Sensor.TYPE_AMBIENT_TEMPERATURE);
-        }
-        // set temperature textview to NOT_SUPPORTED if no temperature sensor is available
-        if (tempSensor == null) {
-            temperatureTxtView.setText(NOT_SUPPORTED);
-        }
-        // get accelerometer and magnetometer
-        accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-        magnetometer = sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
-    }
-
-    /**
-     * This function checks if the app has necessary permissions to access the GPS sensor and
-     * requests location updates if it has.
-     *
-     * @param requestCode
-     * @param permissions
-     * @param grantResults
-     */
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
-        switch (requestCode) {
-            case 1: {
-                // If request is cancelled, the result arrays are empty.
-                if (grantResults.length > 0 &&
-                        grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    // Here we have the permission, and can request the
-                    // location updates.
-                    locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 500, 2, this);
-                }
-            }
-        }
+        locationUpdates.onStart(this);
+        sensorUpdates.onStart(this);
     }
 
     /**
@@ -228,8 +152,8 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
     @Override
     protected void onStop() {
         super.onStop();
-        locationManager.removeUpdates(this);
-        sensorManager.unregisterListener(this);
+        locationUpdates.onStop();
+        sensorUpdates.onStop();
     }
 
     /**
@@ -237,11 +161,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
      */
     protected void onResume() {
         super.onResume();
-        if (tempSensor != null) {
-            sensorManager.registerListener(this, tempSensor, 1000000);
-        }
-        sensorManager.registerListener(this, accelerometer, 3000000);
-        sensorManager.registerListener(this, magnetometer, 3000000);
+        sensorUpdates.onResume();
     }
 
     /**
@@ -249,73 +169,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
      */
     protected void onPause() {
         super.onPause();
-        sensorManager.unregisterListener(this);
-    }
-
-    /**
-     * This function handles location changes invoming from the GPS sensor. The current location,
-     * altitude and speed are directly displayed to the user. Furthermore, the current location
-     * is stored after displaying it. It is used in a with the next location measurement to calculate
-     * the acceleration.
-     *
-     * @param location (current location)
-     */
-    @Override
-    public void onLocationChanged(Location location) {
-        locationTxtView.setText(String.format("%.5f N, %.5f E", location.getLatitude(), location.getLongitude()));
-        // location.getSpeed returns speed in m/s and therefore *3.6 to get speed in km/h
-        speedTxtView.setText(String.format("%.1f km/h", location.getSpeed() * 3.6));
-        accelerationTxtView.setText(String.format("%.2f m/s²", getAcceleration(location)));
-        heightTxtView.setText(String.format("%.1f m.a.s.l.", location.getAltitude()));
-        if (record) {
-            logPosition(location);
-        }
-        oldLoc = location;
-    }
-
-    /**
-     * This function calculates the acceleration, based on the speed at the current and last location.
-     * It denotes the speed difference between the two locations over time.
-     *
-     * @param location (current location)
-     * @return acceleration in m/s^2
-     */
-    public double getAcceleration(Location location) {
-        if (oldLoc != null) {
-            double acceleration = ((location.getSpeed() - oldLoc.getSpeed()) / (location.getTime() - oldLoc.getTime()) * 1000);
-            return acceleration;
-        } else {
-            return 0;
-        }
-    }
-
-    /**
-     * This function translates bearing values into user-readable text. Values range between
-     * -180° and 180°, whereas 0° corresponds to the mobile heading north.
-     *
-     * @param bearing calculated based on azimuth (based on accelerometer and magnetic field sensor)
-     * @return string heading as user-readable text (N/NW/W/SW/S/SE/E/NE)
-     */
-    public String getHeading(double bearing) {
-        String heading = "N/A";
-        if ((bearing >= -22.5 && bearing <= 0) || (bearing >= 0 && bearing <= 22.5)) {
-            heading = "N";
-        } else if (bearing < -22.5 && bearing >= -67.5) {
-            heading = "NE";
-        } else if (bearing < -67.5 && bearing >= -112.5) {
-            heading = "E";
-        } else if (bearing < -112.5 && bearing >= -157.5) {
-            heading = "SE";
-        } else if (bearing < -157.5 || bearing > 157.5) {
-            heading = "S";
-        } else if (bearing > 112.5 && bearing <= 157.5) {
-            heading = "SW";
-        } else if (bearing > 67.5 && bearing <= 112.5) {
-            heading = "W";
-        } else if (bearing > 22.5 && bearing <= 67.5) {
-            heading = "NW";
-        }
-        return heading;
+        sensorUpdates.onPause();
     }
 
     /**
@@ -324,7 +178,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
      *
      * @param location the current location
      */
-    public void logPosition(Location location) {
+    public void logPosition(String location) {
         // check if SD card is mounted
         if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
             try {
@@ -349,11 +203,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
                 }
                 //write data if location is not null, e.g. data is available
                 if (location != null) {
-                    writer.print(location.getTime()); //Time
-                    writer.print(";");
-                    writer.print(location.getLatitude());
-                    writer.print(";");
-                    writer.println(location.getLongitude());
+                    writer.println(location);
                 }
                 // close writer and output stream
                 writer.close();
@@ -373,58 +223,32 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         }
     }
 
-    /**
-     * This function handles incoming sensor measurements. It handles temperature measurements as
-     * well as accelerometer and magnetic field measurements which are used to calculate the heading.
-     * The heading is directly displayed on the display as user readable text.
-     *
-     * @param event
-     */
-    public void onSensorChanged(SensorEvent event) {
-        Sensor sensor = event.sensor;
-        // Set temperature on display, if event is of type temperature
-        if (sensor.getType() == Sensor.TYPE_AMBIENT_TEMPERATURE) {
-            float temperature = event.values[0];
-            temperatureTxtView.setText(String.format("%.1f° C", temperature));
-            // Get values of accelerometer and store them
-        } else if (sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
-            gravity = event.values;
-            // Get magnetic field values and store them
-        } else if (sensor.getType() == Sensor.TYPE_MAGNETIC_FIELD) {
-            geomagnetic = event.values;
-        }
-        // Access accelerometer and magnetic field values
-        if (gravity != null && geomagnetic != null) {
-            float R[] = new float[9];
-            float I[] = new float[9];
-            // check if rotation matrix was calculated
-            boolean success = SensorManager.getRotationMatrix(R, I, gravity, geomagnetic);
-            if (success) {
-                // calculate azimuth, based on accelerometer and magnetic field sensors
-                float orientation[] = new float[3];
-                orientation = lowPass(SensorManager.getOrientation(R, orientation), orientation);
-                float azimuth = orientation[0];
-                // calculate bearing based on azimuth
-                double bearing = Math.round(-azimuth * 360 / (2 * Math.PI));
-                // display bearing on display as readable text using getHeading(bearing)
-                headingTxtView.setText(getHeading(bearing));
-                double bearingDegree;
-                if (bearing < 0) {
-                    bearingDegree = 360 + bearing;
-                } else if (bearing > 0) {
-                    bearingDegree = bearing;
-                } else {
-                    bearingDegree = 0;
+    @Override
+    public void update(Observable o, Object arg) {
+        try {
+            if (o instanceof LocationUpdates) {
+                ArrayList<String> locationValues = (ArrayList<String>) arg;
+                locationTxtView.setText(locationValues.get(1));
+                speedTxtView.setText(locationValues.get(2));
+                accelerationTxtView.setText(locationValues.get(3));
+                heightTxtView.setText(locationValues.get(4));
+                if (record) {
+                    logPosition(locationValues.get(5));
                 }
-                headingDegreeTxtView.setText(String.format("%.0f°", bearingDegree));
+            } else if (o instanceof SensorUpdates) {
+                ArrayList<String> sensorValues = (ArrayList<String>) arg;
+                headingTxtView.setText(sensorValues.get(1));
+                headingDegreeTxtView.setText(sensorValues.get(2));
+                temperatureTxtView.setText(sensorValues.get(4));
+                Float bearingDegree = new Float(sensorValues.get(3));
                 // Create rotate animation of imageViewHeading
                 RotateAnimation ra;
                 // the following conditional statement manages the turning direction of the rotation
                 // such that the rotation is not too large
                 if (oldBearingDegree - bearingDegree > 180 || oldBearingDegree - bearingDegree < -180) {
-                    ra = new RotateAnimation((float) bearingDegree, (float) oldBearingDegree, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+                    ra = new RotateAnimation(bearingDegree, oldBearingDegree, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
                 } else {
-                    ra = new RotateAnimation((float) oldBearingDegree, (float) bearingDegree, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+                    ra = new RotateAnimation(oldBearingDegree, bearingDegree, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
                 }
                 // Rotate heading image so that arrow always points north
                 ra.setDuration(210);
@@ -432,67 +256,14 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
                 headingImageView.startAnimation(ra);
                 // set old bearing
                 oldBearingDegree = bearingDegree;
+            } else {
+                Exception e = new Exception("Invalid observable");
+                throw e;
             }
-        } else {
-            headingTxtView.setText("N/A");
+        } catch (Exception e) {//Catch exception if any
+            // error message if exception is given.
+            System.err.println("Error: " + e.getMessage());
+            Log.e(getClass().toString(), Log.getStackTraceString(e));
         }
-    }
-
-    /**
-     * The low-pass filter omits high frequencies in sensor measurements and allows for a smoother
-     * measuring process.
-     *
-     * @param input  measurement values directly from the sensor
-     * @param output variable, in which the filtered values are written
-     * @return filtered values
-     */
-    protected float[] lowPass(float[] input, float[] output) {
-        if (output == null) return input;
-        for (int i = 0; i < input.length; i++) {
-            output[i] = output[i] + ALPHA * (input[i] - output[i]);
-        }
-        return output;
-    }
-
-    /**
-     * Unused function.
-     *
-     * @param sensor
-     * @param accuracy
-     */
-    public void onAccuracyChanged(Sensor sensor, int accuracy) {
-
-    }
-
-    /**
-     * Unused function
-     *
-     * @param provider
-     * @param status
-     * @param extras
-     */
-    @Override
-    public void onStatusChanged(String provider, int status, Bundle extras) {
-
-    }
-
-    /**
-     * Unused function
-     *
-     * @param provider
-     */
-    @Override
-    public void onProviderEnabled(String provider) {
-
-    }
-
-    /**
-     * Unused function
-     *
-     * @param provider
-     */
-    @Override
-    public void onProviderDisabled(String provider) {
-
     }
 }
