@@ -12,7 +12,12 @@ import java.util.ArrayList;
 import java.util.Observable;
 
 /**
- * Created by chsch on 06.04.2017.
+ * This class implements the SensorEventListener which receives updates from several sensors.
+ * The class implements the Observable interface so that the main activity can observe sensor
+ * changes. The arguments needed in the MainActivity are passed as an ArrayList<Object> of the form:
+ * {(String)Heading, (String)HeadingDegree, (Float)HeadingDegree, (String) Temperature}
+ * The String values can be directly shown in the interface. The (Float) HeadingDegree are needed
+ * for the rotation animation of the imageview in the main activity.
  */
 
 public class SensorUpdates extends Observable implements SensorEventListener {
@@ -33,8 +38,16 @@ public class SensorUpdates extends Observable implements SensorEventListener {
     private Sensor accelerometer;
     private Sensor magnetometer;
 
+    // This ArrayList will be passed to the observer as argument.
     private ArrayList<String> sensorValues = new ArrayList<>();
 
+    /**
+     * This method is to be called by the MainActivity in its onStart() method. The method creates
+     * initializes the arguments that are provided to the observer, creates the sensorManager and
+     * initializes the needed sensors. Furthermore, the build version is checked for the
+     * temperature sensor. Furthermore, it checks if a temperature sensor is available and displays
+     * a message (NOT_SUPPORTED) if it is not.
+     */
     protected void onStart(AppCompatActivity activity) {
         for (int i = 0; i <= 4; i++) {
             sensorValues.add("N/A");
@@ -53,10 +66,18 @@ public class SensorUpdates extends Observable implements SensorEventListener {
         magnetometer = sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
     }
 
+    /**
+     * This method is to be called by the MainActivity in its onStop() method. This function
+     * prevents the app from further accessing any sensors if it is stopped.
+     */
     protected void onStop() {
         sensorManager.unregisterListener(this);
     }
 
+    /**
+     * This method is to be called by the MainActivity in its onResume() method. It registers
+     * Listeners for all sensors on resume with a delay of one second.
+     */
     protected void onResume() {
         if (tempSensor != null) {
             sensorManager.registerListener(this, tempSensor, 1000000);
@@ -65,6 +86,10 @@ public class SensorUpdates extends Observable implements SensorEventListener {
         sensorManager.registerListener(this, magnetometer, 3000000);
     }
 
+    /**
+     * This method is to be called by the MainActivity in its onPause() method. It unregisters
+     * all sensors on pause
+     */
     protected void onPause() {
         sensorManager.unregisterListener(this);
     }
@@ -173,7 +198,12 @@ public class SensorUpdates extends Observable implements SensorEventListener {
         return output;
     }
 
-
+    /**
+     * Unused function
+     *
+     * @param sensor
+     * @param accuracy
+     */
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
 

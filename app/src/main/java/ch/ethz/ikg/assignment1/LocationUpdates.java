@@ -14,7 +14,12 @@ import java.util.ArrayList;
 import java.util.Observable;
 
 /**
- * Created by chsch on 06.04.2017.
+ * This class implements the LocationListener which receives updates from the GPS sensor. The class
+ * implements the Observable interface so that the main activity can observe location changes.
+ * The arguments needed in the MainActivity are passed as an ArrayList<String> with the form:
+ * {Location, Speed, Acceleration, Height, Log} whose values can be directly shown in the
+ * interface. Log contains a timestamp, longitude and latitude which can be written to a log
+ * file directly.
  */
 
 public class LocationUpdates extends Observable implements LocationListener {
@@ -25,9 +30,19 @@ public class LocationUpdates extends Observable implements LocationListener {
     // Create LocationManager to access GPS measurements
     private LocationManager locationManager;
 
+    // This ArrayList will be passed to the observer as argument.
     private ArrayList<String> locationValues = new ArrayList<>();
 
+    /**
+     * This method is to be called by the MainActivity in its onStart() method.
+     * The method creates initializes the arguments that are provided to the observer, creates
+     * the locationManager and checks permissions. To do so, the current activity is passed so
+     * that the method has the context and necessary information for the permission check.
+     *
+     * @param activity
+     */
     protected void onStart(AppCompatActivity activity) {
+        //Initialize ArrayList which is passed to the observer
         for (int i = 0; i <= 5; i++) {
             locationValues.add("N/A");
         }
@@ -73,12 +88,24 @@ public class LocationUpdates extends Observable implements LocationListener {
         }
     }
 
+    /**
+     * This function prevents the app from further accessing the GPS sensors if it is stopped.
+     */
     protected void onStop() {
         locationManager.removeUpdates(this);
     }
 
+    /**
+     * This function handles location changes incoming from the GPS sensor. The current location,
+     * altitude and speed are directly displayed to the user. Furthermore, the current location
+     * is stored after displaying it. It is used in a with the next location measurement to calculate
+     * the acceleration.
+     *
+     * @param location (current location)
+     */
     @Override
     public void onLocationChanged(Location location) {
+        // as soon as the location changed, mark this object as changed
         setChanged();
         locationValues.add(1, String.format("%.5f N, %.5f E", location.getLatitude(), location.getLongitude()));
         // location.getSpeed returns speed in m/s and therefore *3.6 to get speed in km/h
@@ -87,6 +114,7 @@ public class LocationUpdates extends Observable implements LocationListener {
         locationValues.add(4, String.format("%.1f m.a.s.l.", location.getAltitude()));
         locationValues.add(5, String.format("%d;%.7f;%.7f", location.getTime(), location.getLatitude(), location.getLongitude()));
         oldLoc = location;
+        // notify the observers that the location values have changed
         notifyObservers(locationValues);
     }
 
@@ -106,16 +134,33 @@ public class LocationUpdates extends Observable implements LocationListener {
         }
     }
 
+    /**
+     * Unused function
+     *
+     * @param provider
+     * @param status
+     * @param extras
+     */
     @Override
     public void onStatusChanged(String provider, int status, Bundle extras) {
 
     }
 
+    /**
+     * Unused function
+     *
+     * @param provider
+     */
     @Override
     public void onProviderEnabled(String provider) {
 
     }
 
+    /**
+     * Unused function
+     *
+     * @param provider
+     */
     @Override
     public void onProviderDisabled(String provider) {
 

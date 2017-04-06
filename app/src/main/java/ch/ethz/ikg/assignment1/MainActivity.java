@@ -54,14 +54,9 @@ import java.util.Observer;
  * - Acceleration
  * - Location
  * - Temperature
- * To obtain this information, GPS-, acceleration-, magnetic field- and temperature sensor are
- * accessed and processed. Furthermore, the recording of a GPS track with storage into a CSV file
- * is possible.
- * <p>
- * A drawback of the application is, that the LocationListener and the SensorEventListener are
- * included in the main activity. For the sake of clarity and clean design, they should be
- * implemented in individual classes which can then be accessed by the main activity. This
- * should be implemented in a next step.
+ * The values are read in two additional classes which extend the Observable class. This class
+ * implements the Observer interface which allows it to observe the LocationUpdates and
+ * SensorUpdates so that the UI can be updated according to their changes.
  *
  * @author Christoph Schönenberger
  * @version 1.2
@@ -134,10 +129,7 @@ public class MainActivity extends AppCompatActivity implements Observer {
     }
 
     /**
-     * This function sets the locationManager as well as sensorManager. Furthermore it checks, if
-     * all necessary permissions are given to acquire GPS measurings and requests location updates.
-     * Furthermore, it checks if a temperature sensor is available and displays a message
-     * (NOT_SUPPORTED) if it is not.
+     * This method calls the onStart methods of all observables.
      */
     @Override
     protected void onStart() {
@@ -147,7 +139,8 @@ public class MainActivity extends AppCompatActivity implements Observer {
     }
 
     /**
-     * This function prevents the app from further accessing any sensors if it is stopped.
+     * This function prevents is called when the activity is stopped. The observables are
+     * stopped as well.
      */
     @Override
     protected void onStop() {
@@ -157,7 +150,8 @@ public class MainActivity extends AppCompatActivity implements Observer {
     }
 
     /**
-     * Registers Listeners for all sensors on resume with a delay of one second.
+     * The method is called, when the activity is resumed. The onResume() Method of the Observables
+     * is called as well.
      */
     protected void onResume() {
         super.onResume();
@@ -165,7 +159,7 @@ public class MainActivity extends AppCompatActivity implements Observer {
     }
 
     /**
-     * Unregisters all sensors on pause
+     * Pauses all the app and also the observables that can be paused.
      */
     protected void onPause() {
         super.onPause();
@@ -223,6 +217,13 @@ public class MainActivity extends AppCompatActivity implements Observer {
         }
     }
 
+    /**
+     * This function updates the UI when the observables change. Two possible observables are
+     * included: LocationUpdates & SensorUpdates. The method handles these two types accordingly.
+     *
+     * @param o
+     * @param arg
+     */
     @Override
     public void update(Observable o, Object arg) {
         try {
