@@ -228,20 +228,20 @@ public class MainActivity extends AppCompatActivity implements Observer {
     public void update(Observable o, Object arg) {
         try {
             if (o instanceof LocationUpdates) {
-                ArrayList<String> locationValues = (ArrayList<String>) arg;
-                locationTxtView.setText(locationValues.get(1));
-                speedTxtView.setText(locationValues.get(2));
-                accelerationTxtView.setText(locationValues.get(3));
-                heightTxtView.setText(locationValues.get(4));
+                String[] locationValues = (String[]) arg;
+                locationTxtView.setText(locationValues[0]);
+                speedTxtView.setText(locationValues[1]);
+                accelerationTxtView.setText(locationValues[2]);
+                heightTxtView.setText(locationValues[3]);
                 if (record) {
-                    logPosition(locationValues.get(5));
+                    logPosition(locationValues[4]);
                 }
             } else if (o instanceof SensorUpdates) {
-                ArrayList<String> sensorValues = (ArrayList<String>) arg;
-                headingTxtView.setText(sensorValues.get(1));
-                headingDegreeTxtView.setText(sensorValues.get(2));
-                temperatureTxtView.setText(sensorValues.get(4));
-                Float bearingDegree = new Float(sensorValues.get(3));
+                String[] sensorValues = (String[]) arg;
+                headingTxtView.setText(sensorValues[0]);
+                headingDegreeTxtView.setText(sensorValues[1]);
+                temperatureTxtView.setText(sensorValues[3]);
+                Float bearingDegree = new Float(sensorValues[2]);
                 // Create rotate animation of imageViewHeading
                 RotateAnimation ra;
                 // the following conditional statement manages the turning direction of the rotation

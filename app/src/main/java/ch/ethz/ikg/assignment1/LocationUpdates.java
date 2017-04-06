@@ -10,13 +10,12 @@ import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 
-import java.util.ArrayList;
 import java.util.Observable;
 
 /**
  * This class implements the LocationListener which receives updates from the GPS sensor. The class
  * implements the Observable interface so that the main activity can observe location changes.
- * The arguments needed in the MainActivity are passed as an ArrayList<String> with the form:
+ * The arguments needed in the MainActivity are passed as an String[5] with the form:
  * {Location, Speed, Acceleration, Height, Log} whose values can be directly shown in the
  * interface. Log contains a timestamp, longitude and latitude which can be written to a log
  * file directly.
@@ -30,8 +29,8 @@ public class LocationUpdates extends Observable implements LocationListener {
     // Create LocationManager to access GPS measurements
     private LocationManager locationManager;
 
-    // This ArrayList will be passed to the observer as argument.
-    private ArrayList<String> locationValues = new ArrayList<>();
+    // This Array will be passed to the observer as argument.
+    private String[] locationValues = new String[5];
 
     /**
      * This method is to be called by the MainActivity in its onStart() method.
@@ -42,9 +41,9 @@ public class LocationUpdates extends Observable implements LocationListener {
      * @param activity
      */
     protected void onStart(AppCompatActivity activity) {
-        //Initialize ArrayList which is passed to the observer
-        for (int i = 0; i <= 5; i++) {
-            locationValues.add("N/A");
+        //Initialize Array which is passed to the observer
+        for (int i = 0; i < 5; i++) {
+            locationValues[i] = "N/A";
         }
         locationManager = (LocationManager) activity.getSystemService(Context.LOCATION_SERVICE);
 
@@ -107,12 +106,12 @@ public class LocationUpdates extends Observable implements LocationListener {
     public void onLocationChanged(Location location) {
         // as soon as the location changed, mark this object as changed
         setChanged();
-        locationValues.add(1, String.format("%.5f N, %.5f E", location.getLatitude(), location.getLongitude()));
+        locationValues[0] = String.format("%.5f N, %.5f E", location.getLatitude(), location.getLongitude());
         // location.getSpeed returns speed in m/s and therefore *3.6 to get speed in km/h
-        locationValues.add(2, String.format("%.1f km/h", location.getSpeed() * 3.6));
-        locationValues.add(3, String.format("%.2f m/s²", getAcceleration(location)));
-        locationValues.add(4, String.format("%.1f m.a.s.l.", location.getAltitude()));
-        locationValues.add(5, String.format("%d;%.7f;%.7f", location.getTime(), location.getLatitude(), location.getLongitude()));
+        locationValues[1] = String.format("%.1f km/h", location.getSpeed() * 3.6);
+        locationValues[2] = String.format("%.2f m/s²", getAcceleration(location));
+        locationValues[3] = String.format("%.1f m.a.s.l.", location.getAltitude());
+        locationValues[4] = String.format("%d;%.7f;%.7f", location.getTime(), location.getLatitude(), location.getLongitude());
         oldLoc = location;
         // notify the observers that the location values have changed
         notifyObservers(locationValues);

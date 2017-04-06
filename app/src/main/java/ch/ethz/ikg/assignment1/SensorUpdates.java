@@ -8,13 +8,12 @@ import android.hardware.SensorManager;
 import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
 
-import java.util.ArrayList;
 import java.util.Observable;
 
 /**
  * This class implements the SensorEventListener which receives updates from several sensors.
  * The class implements the Observable interface so that the main activity can observe sensor
- * changes. The arguments needed in the MainActivity are passed as an ArrayList<Object> of the form:
+ * changes. The arguments needed in the MainActivity are passed as an String[4] of the form:
  * {(String)Heading, (String)HeadingDegree, (Float)HeadingDegree, (String) Temperature}
  * The String values can be directly shown in the interface. The (Float) HeadingDegree are needed
  * for the rotation animation of the imageview in the main activity.
@@ -38,8 +37,8 @@ public class SensorUpdates extends Observable implements SensorEventListener {
     private Sensor accelerometer;
     private Sensor magnetometer;
 
-    // This ArrayList will be passed to the observer as argument.
-    private ArrayList<String> sensorValues = new ArrayList<>();
+    // This Array will be passed to the observer as argument.
+    private String[] sensorValues = new String[4];
 
     /**
      * This method is to be called by the MainActivity in its onStart() method. The method creates
@@ -49,8 +48,9 @@ public class SensorUpdates extends Observable implements SensorEventListener {
      * a message (NOT_SUPPORTED) if it is not.
      */
     protected void onStart(AppCompatActivity activity) {
-        for (int i = 0; i <= 4; i++) {
-            sensorValues.add("N/A");
+        //Initialize Array which is passed to the observer
+        for (int i = 0; i < 4; i++) {
+            sensorValues[i] = "N/A";
         }
         // get temperature sensor, if it is supported by current version.
         sensorManager = (SensorManager) activity.getSystemService(Context.SENSOR_SERVICE);
@@ -59,7 +59,7 @@ public class SensorUpdates extends Observable implements SensorEventListener {
         }
         // set temperature textview to NOT_SUPPORTED if no temperature sensor is available
         if (tempSensor == null) {
-            sensorValues.add(4, NOT_SUPPORTED);
+            sensorValues[3] = NOT_SUPPORTED;
         }
         // get accelerometer and magnetometer
         accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
@@ -107,7 +107,7 @@ public class SensorUpdates extends Observable implements SensorEventListener {
         // Set temperature on display, if event is of type temperature
         if (sensor.getType() == Sensor.TYPE_AMBIENT_TEMPERATURE) {
             float temperature = event.values[0];
-            sensorValues.add(4, String.format("%.1f° C", temperature));
+            sensorValues[3] = String.format("%.1f° C", temperature);
             // Get values of accelerometer and store them
         } else if (sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
             gravity = event.values;
@@ -129,7 +129,7 @@ public class SensorUpdates extends Observable implements SensorEventListener {
                 // calculate bearing based on azimuth
                 double bearing = Math.round(-azimuth * 360 / (2 * Math.PI));
                 // display bearing on display as readable text using getHeading(bearing)
-                sensorValues.add(1, getHeading(bearing));
+                sensorValues[0] = getHeading(bearing);
                 double bearingDegree;
                 if (bearing < 0) {
                     bearingDegree = 360 + bearing;
@@ -138,15 +138,15 @@ public class SensorUpdates extends Observable implements SensorEventListener {
                 } else {
                     bearingDegree = 0;
                 }
-                sensorValues.add(2, String.format("%.0f°", bearingDegree));
-                sensorValues.add(3, String.valueOf(bearingDegree));
+                sensorValues[1] = String.format("%.0f°", bearingDegree);
+                sensorValues[2] = String.valueOf(bearingDegree);
 
                 notifyObservers(sensorValues);
             }
         } else {
-            sensorValues.add(1, "N/A");
-            sensorValues.add(2, "N/A");
-            sensorValues.add(3, "0");
+            sensorValues[0] = "N/A";
+            sensorValues[1] = "N/A";
+            sensorValues[2] = "0";
             notifyObservers(sensorValues);
         }
     }
