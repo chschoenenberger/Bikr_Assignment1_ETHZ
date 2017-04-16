@@ -24,7 +24,7 @@ import java.util.Observable;
 public class LocationUpdates extends Observable implements LocationListener {
 
     // Create Location which stores last known location
-    Location oldLoc = null;
+    private Location oldLoc = null;
 
     // Create LocationManager to access GPS measurements
     private LocationManager locationManager;
