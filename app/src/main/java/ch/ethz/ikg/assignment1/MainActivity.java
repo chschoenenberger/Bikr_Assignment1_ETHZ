@@ -26,8 +26,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.HapticFeedbackConstants;
+import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.RotateAnimation;
+import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -39,7 +41,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.PrintWriter;
-import java.util.ArrayList;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -79,6 +80,7 @@ public class MainActivity extends AppCompatActivity implements Observer {
     private TextView temperatureTxtView;
     private ImageView headingImageView;
     private ToggleButton toggle;
+    private Button routingButton;
     private boolean record;
 
     /**
@@ -126,6 +128,17 @@ public class MainActivity extends AppCompatActivity implements Observer {
                 }
             }
         });
+
+        routingButton = (Button) findViewById(R.id.routingButton);
+        routingButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Uri uri = Uri.parse("geo:");
+                Intent intent = new Intent(Intent.ACTION_VIEW);
+                intent.setData(uri);
+                startActivity(intent);
+            }
+        });
     }
 
     /**
@@ -146,7 +159,19 @@ public class MainActivity extends AppCompatActivity implements Observer {
     protected void onStop() {
         super.onStop();
         locationUpdates.onStop();
+        locationUpdates.deleteObserver(this);
         sensorUpdates.onStop();
+        sensorUpdates.deleteObserver(this);
+    }
+
+    /**
+     * Pauses all the app and also the observables that can be paused.
+     */
+    protected void onPause() {
+        super.onPause();
+        locationUpdates.deleteObserver(this);
+        sensorUpdates.onPause();
+        sensorUpdates.deleteObserver(this);
     }
 
     /**
@@ -155,15 +180,9 @@ public class MainActivity extends AppCompatActivity implements Observer {
      */
     protected void onResume() {
         super.onResume();
+        locationUpdates.addObserver(this);
+        sensorUpdates.addObserver(this);
         sensorUpdates.onResume();
-    }
-
-    /**
-     * Pauses all the app and also the observables that can be paused.
-     */
-    protected void onPause() {
-        super.onPause();
-        sensorUpdates.onPause();
     }
 
     /**
@@ -229,12 +248,12 @@ public class MainActivity extends AppCompatActivity implements Observer {
         try {
             if (o instanceof LocationUpdates) {
                 String[] locationValues = (String[]) arg;
-                locationTxtView.setText(locationValues[0]);
-                speedTxtView.setText(locationValues[1]);
-                accelerationTxtView.setText(locationValues[2]);
-                heightTxtView.setText(locationValues[3]);
+                locationTxtView.setText(String.format("%.5f N, %.5f E", new Float(locationValues[0]), new Float(locationValues[1])));
+                speedTxtView.setText(locationValues[2]);
+                accelerationTxtView.setText(locationValues[3]);
+                heightTxtView.setText(locationValues[4]);
                 if (record) {
-                    logPosition(locationValues[4]);
+                    logPosition(locationValues[5]);
                 }
             } else if (o instanceof SensorUpdates) {
                 String[] sensorValues = (String[]) arg;
