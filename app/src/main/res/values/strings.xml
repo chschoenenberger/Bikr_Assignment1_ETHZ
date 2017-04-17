@@ -18,5 +18,7 @@
     <string name="headingDegree">N/A</string>
     <string name="nameHeading">Heading:</string>
     <string name="averageSpeed">N/A</string>
+    <string name="centerButton">Center view</string>
+    <string name="northButton">Adjust to North</string>
 
 </resources>
