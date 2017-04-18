@@ -18,6 +18,7 @@ import com.esri.arcgisruntime.portal.Portal;
 import com.esri.arcgisruntime.portal.PortalItem;
 import com.esri.arcgisruntime.security.Credential;
 import com.esri.arcgisruntime.security.UserCredential;
+import com.esri.arcgisruntime.symbology.MarkerSymbol;
 import com.esri.arcgisruntime.symbology.PictureMarkerSymbol;
 import com.esri.arcgisruntime.symbology.SimpleRenderer;
 
@@ -42,6 +43,7 @@ public class Map extends AppCompatActivity {
 
         // initialize MapView with Map including basemap and graphicsOverlay
         final MapView mapView = (MapView) findViewById(R.id.mapView);
+        // In a future version, an option menu could be displayed to select the basemaps
         ArcGISMap map = new ArcGISMap(Basemap.Type.LIGHT_GRAY_CANVAS_VECTOR, 47.408570, 8.506846, 16);
         mapView.setMap(map);
         mapView.getGraphicsOverlays().add(graphicsOverlay);
@@ -94,6 +96,7 @@ public class Map extends AppCompatActivity {
 
     /**
      * add the IKG portal with specified credentials
+     *
      * @return
      */
     public Portal addPortal() {
@@ -105,7 +108,12 @@ public class Map extends AppCompatActivity {
 
     /**
      * Add layers to created Portal containing rental, pumping stations and parking lots
-     * @param portal which was created beforehand
+     * In a future version, the symbols should be generalized so that not too many POIs are
+     * displayed at the same time. Furthermore, features should always be angle alined to the
+     * screen. However, the function to achieve this Symbol.setAngleAlignment(MarkerSymbol.AngleAlignment.SCREEN);
+     * did not work.
+     *
+     * @param portal  which was created beforehand
      * @param mapView on which layers are to be displayes
      */
     public void addLayers(Portal portal, MapView mapView) {
@@ -141,6 +149,7 @@ public class Map extends AppCompatActivity {
         PictureMarkerSymbol rentalSymbol = new PictureMarkerSymbol(rentalDrawable);
         rentalSymbol.setHeight(30);
         rentalSymbol.setWidth(30);
+        rentalSymbol.setAngleAlignment(MarkerSymbol.AngleAlignment.SCREEN);
         SimpleRenderer rendererRent = new SimpleRenderer(rentalSymbol);
         rentalLayer.setRenderer(rendererRent);
         map.getOperationalLayers().add(rentalLayer);

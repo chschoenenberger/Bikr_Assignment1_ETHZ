@@ -72,6 +72,8 @@ public class Routing extends DefaultMapViewOnTouchListener {
     @Override
     public void onLongPress(MotionEvent e) {
         // if another routing task already exists, clear route
+        /* in a future version, the user should be asked, if current destination should be
+           included in the routing.*/
         if (destination != null) {
             stopRouting();
             Toast.makeText(mContext, "Previous routing task cancelled", Toast.LENGTH_SHORT).show();
@@ -144,9 +146,10 @@ public class Routing extends DefaultMapViewOnTouchListener {
     /**
      * Routing task itself which accesses the routing service and displays the route on the provided
      * MapView
+     *
      * @param mapView on which the route is to be displayed
-     * @param from Origin = current location
-     * @param to destination of routing task
+     * @param from    Origin = current location
+     * @param to      destination of routing task
      */
     private void route(final MapView mapView, final Point from, final Point to) {
         // select routing service and enter credentials for service

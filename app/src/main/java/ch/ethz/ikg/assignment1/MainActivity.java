@@ -80,7 +80,6 @@ public class MainActivity extends AppCompatActivity implements Observer {
     private TextView temperatureTxtView;
     private ImageView headingImageView;
     private ToggleButton toggle;
-    private Button routingButton;
     private boolean record;
 
     /**
@@ -129,7 +128,10 @@ public class MainActivity extends AppCompatActivity implements Observer {
             }
         });
 
-        routingButton = (Button) findViewById(R.id.routingButton);
+        // Button to start map activity with routing.
+        /*A future version should include a drawer menu with which between several activities
+        * can be switched. However, due to time pressure this could not be implemented. */
+        Button routingButton = (Button) findViewById(R.id.routingButton);
         routingButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -277,8 +279,7 @@ public class MainActivity extends AppCompatActivity implements Observer {
                 // set old bearing
                 oldBearingDegree = bearingDegree;
             } else {
-                Exception e = new Exception("Invalid observable");
-                throw e;
+                throw new Exception("Invalid observable");
             }
         } catch (Exception e) {//Catch exception if any
             // error message if exception is given.
