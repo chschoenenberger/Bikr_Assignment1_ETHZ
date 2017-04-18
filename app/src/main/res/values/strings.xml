@@ -20,5 +20,6 @@
     <string name="averageSpeed">N/A</string>
     <string name="centerButton">Center view</string>
     <string name="northButton">Adjust to North</string>
+    <string name="proximity_text">Click notification to return to app</string>
 
 </resources>
