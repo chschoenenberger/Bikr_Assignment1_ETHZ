@@ -14,7 +14,8 @@
         android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_above="@+id/routingButton">
+        android:layout_above="@+id/routingButton"
+        android:id="@+id/scrollView2">
 
         <RelativeLayout
             android:layout_width="wrap_content"
@@ -282,21 +283,29 @@
         </RelativeLayout>
     </ScrollView>
 
+    <ImageButton
+        android:id="@+id/routingButton"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        app:srcCompat="@drawable/ic_navigate"
+        android:hapticFeedbackEnabled="true"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:tint="@color/colorPrimaryDark" />
+
     <ToggleButton
         android:id="@+id/toggleButton"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="60dp"
-        android:layout_alignParentBottom="true"
         android:hapticFeedbackEnabled="true"
         android:text="@string/recording"
         android:textOff="@string/start_recording"
-        android:textOn="@string/stop_recording" />
-
-    <Button
-        android:id="@+id/routingButton"
-        android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:layout_above="@+id/toggleButton"
-        android:text="Navigate" />
+        android:textOn="@string/stop_recording"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_toLeftOf="@+id/routingButton"
+        android:layout_toStartOf="@+id/routingButton" />
 
 </RelativeLayout>

@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Bikr - Assignment1 (ETHZ)</string>
+    <string name="app_name">Bikr - Assignment2 (ETHZ)</string>
 
     <string name="headingValue">N/A</string>
     <string name="valueSpeed">N/A</string>
@@ -21,5 +21,10 @@
     <string name="centerButton">Center view</string>
     <string name="northButton">Adjust to North</string>
     <string name="proximity_text">Click notification to return to app</string>
+
+    <!-- basemap menu items -->
+    <string name="StreetMapMenu">Streets</string>
+    <string name="TopoMenu">Topographic</string>
+    <string name="GrayMenu">Gray</string>
 
 </resources>

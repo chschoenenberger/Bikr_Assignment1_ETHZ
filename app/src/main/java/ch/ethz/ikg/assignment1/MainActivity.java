@@ -29,8 +29,8 @@ import android.view.HapticFeedbackConstants;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.RotateAnimation;
-import android.widget.Button;
 import android.widget.CompoundButton;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -80,6 +80,7 @@ public class MainActivity extends AppCompatActivity implements Observer {
     private TextView temperatureTxtView;
     private ImageView headingImageView;
     private ToggleButton toggle;
+    private ImageButton routingButton;
     private boolean record;
 
     /**
@@ -111,7 +112,6 @@ public class MainActivity extends AppCompatActivity implements Observer {
 
         // reference ToggleButton to record measurements
         toggle = (ToggleButton) findViewById(R.id.toggleButton);
-
         toggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
@@ -129,12 +129,11 @@ public class MainActivity extends AppCompatActivity implements Observer {
         });
 
         // Button to start map activity with routing.
-        /*A future version should include a drawer menu with which between several activities
-        * can be switched. However, due to time pressure this could not be implemented. */
-        Button routingButton = (Button) findViewById(R.id.routingButton);
+        routingButton = (ImageButton) findViewById(R.id.routingButton);
         routingButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                routingButton.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY);
                 Uri uri = Uri.parse("geo:");
                 Intent intent = new Intent(Intent.ACTION_VIEW);
                 intent.setData(uri);

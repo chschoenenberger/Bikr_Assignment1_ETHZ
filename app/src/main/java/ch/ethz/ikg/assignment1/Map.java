@@ -4,8 +4,12 @@ import android.graphics.drawable.BitmapDrawable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.HapticFeedbackConstants;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.esri.arcgisruntime.layers.FeatureLayer;
@@ -13,6 +17,8 @@ import com.esri.arcgisruntime.mapping.ArcGISMap;
 import com.esri.arcgisruntime.mapping.Basemap;
 import com.esri.arcgisruntime.mapping.view.GraphicsOverlay;
 import com.esri.arcgisruntime.mapping.view.LocationDisplay;
+import com.esri.arcgisruntime.mapping.view.MapRotationChangedEvent;
+import com.esri.arcgisruntime.mapping.view.MapRotationChangedListener;
 import com.esri.arcgisruntime.mapping.view.MapView;
 import com.esri.arcgisruntime.portal.Portal;
 import com.esri.arcgisruntime.portal.PortalItem;
@@ -29,7 +35,19 @@ import com.esri.arcgisruntime.symbology.SimpleRenderer;
 
 public class Map extends AppCompatActivity {
 
-    GraphicsOverlay graphicsOverlay = new GraphicsOverlay();
+    private ArcGISMap map = null;
+    private GraphicsOverlay graphicsOverlay = new GraphicsOverlay();
+    // initialize symbols
+    private PictureMarkerSymbol rentalSymbol = null;
+    private PictureMarkerSymbol pumpSymbol = null;
+    private PictureMarkerSymbol parkingSymbol = null;
+    // initialize basemaps
+    MenuItem mStreetsMenuItem = null;
+    MenuItem mTopoMenuItem = null;
+    MenuItem mGrayMenuItem = null;
+    // initialize buttons
+    ImageButton centerButton = null;
+    ImageButton northButton = null;
 
     /**
      * Creates activity and initializes the necessary view and buttons.
@@ -43,8 +61,9 @@ public class Map extends AppCompatActivity {
 
         // initialize MapView with Map including basemap and graphicsOverlay
         final MapView mapView = (MapView) findViewById(R.id.mapView);
+
         // In a future version, an option menu could be displayed to select the basemaps
-        ArcGISMap map = new ArcGISMap(Basemap.Type.LIGHT_GRAY_CANVAS_VECTOR, 47.408570, 8.506846, 16);
+        map = new ArcGISMap(Basemap.Type.TOPOGRAPHIC, 47.391629, 8.522529, 12);
         mapView.setMap(map);
         mapView.getGraphicsOverlays().add(graphicsOverlay);
 
@@ -60,10 +79,11 @@ public class Map extends AppCompatActivity {
         locationDisplay.startAsync();
 
         // initialize button to recenter
-        Button centerButton = (Button) findViewById(R.id.centerButton);
+        centerButton = (ImageButton) findViewById(R.id.centerButton);
         centerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                centerButton.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY);
                 if (locationDisplay.getAutoPanMode() == LocationDisplay.AutoPanMode.OFF) {
                     locationDisplay.setAutoPanMode(LocationDisplay.AutoPanMode.COMPASS_NAVIGATION);
                     Toast.makeText(getApplicationContext(), "Map centered", Toast.LENGTH_SHORT).show();
@@ -74,15 +94,16 @@ public class Map extends AppCompatActivity {
         });
 
         // initialize button to adjust view to north
-        Button northButton = (Button) findViewById(R.id.northButton);
+        northButton = (ImageButton) findViewById(R.id.northButton);
         northButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // if user is currently navigating just set north and continue without adjusting
-                // map angle to user heading
+                northButton.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY);
+                // if user is currently centered on location just set north and continue navigation
+                // without adjusting map angle to user heading
                 if (locationDisplay.getAutoPanMode() == LocationDisplay.AutoPanMode.COMPASS_NAVIGATION) {
                     mapView.setViewpointRotationAsync(0);
-                    locationDisplay.setAutoPanMode(LocationDisplay.AutoPanMode.COMPASS_NAVIGATION);
+                    locationDisplay.setAutoPanMode(LocationDisplay.AutoPanMode.NAVIGATION);
                     // if user is not currently in navigation mode just rotate map north
                 } else {
                     mapView.setViewpointRotationAsync(0);
@@ -92,6 +113,22 @@ public class Map extends AppCompatActivity {
 
         // create onTouchlisteer which reacts to longpress to start navigating
         mapView.setOnTouchListener(new Routing(this, mapView));
+
+        mapView.addMapRotationChangedListener(new MapRotationChangedListener() {
+            @Override
+            public void mapRotationChanged(MapRotationChangedEvent mapRotationChangedEvent) {
+                if (rentalSymbol != null) {
+                    rentalSymbol.setAngle((float) mapView.getMapRotation());
+                }
+                if (parkingSymbol != null) {
+                    parkingSymbol.setAngle((float) mapView.getMapRotation());
+                }
+                if (pumpSymbol != null) {
+                    pumpSymbol.setAngle((float) mapView.getMapRotation());
+                }
+            }
+        });
+
     }
 
     /**
@@ -124,7 +161,7 @@ public class Map extends AppCompatActivity {
         PortalItem parkingSpot = new PortalItem(portal, "3e96e04f176347c9acd97cdebcf63ea0");
         FeatureLayer parkingSpotLayer = new FeatureLayer(parkingSpot, 0);
         BitmapDrawable parkingDrawable = (BitmapDrawable) ContextCompat.getDrawable(this, R.mipmap.ic_parking);
-        PictureMarkerSymbol parkingSymbol = new PictureMarkerSymbol(parkingDrawable);
+        parkingSymbol = new PictureMarkerSymbol(parkingDrawable);
         parkingSymbol.setHeight(20);
         parkingSymbol.setWidth(20);
         SimpleRenderer rendererParking = new SimpleRenderer(parkingSymbol);
@@ -135,7 +172,7 @@ public class Map extends AppCompatActivity {
         PortalItem pumpingStation = new PortalItem(portal, "039bcfd424b946e9b799d8c6a81be9ff");
         FeatureLayer pumpingStationLayer = new FeatureLayer(pumpingStation, 0);
         BitmapDrawable pumpDrawable = (BitmapDrawable) ContextCompat.getDrawable(this, R.mipmap.ic_pump);
-        PictureMarkerSymbol pumpSymbol = new PictureMarkerSymbol(pumpDrawable);
+        pumpSymbol = new PictureMarkerSymbol(pumpDrawable);
         pumpSymbol.setHeight(30);
         pumpSymbol.setWidth(30);
         SimpleRenderer rendererPump = new SimpleRenderer(pumpSymbol);
@@ -146,7 +183,7 @@ public class Map extends AppCompatActivity {
         PortalItem rental = new PortalItem(portal, "e12ad29f628a4070b9cacd729a492f4d");
         FeatureLayer rentalLayer = new FeatureLayer(rental, 0);
         BitmapDrawable rentalDrawable = (BitmapDrawable) ContextCompat.getDrawable(this, R.mipmap.ic_rental);
-        PictureMarkerSymbol rentalSymbol = new PictureMarkerSymbol(rentalDrawable);
+        rentalSymbol = new PictureMarkerSymbol(rentalDrawable);
         rentalSymbol.setHeight(30);
         rentalSymbol.setWidth(30);
         rentalSymbol.setAngleAlignment(MarkerSymbol.AngleAlignment.SCREEN);
@@ -183,6 +220,47 @@ public class Map extends AppCompatActivity {
      */
     protected void onResume() {
         super.onResume();
+    }
+
+    /**
+     * Create menu to select basemap.
+     *
+     * @param menu which is to be loaded
+     * @return always true
+     */
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_main, menu);
+        mTopoMenuItem = menu.getItem(0);
+        mStreetsMenuItem = menu.getItem(1);
+        mGrayMenuItem = menu.getItem(2);
+        mTopoMenuItem.setChecked(true);
+        return true;
+    }
+
+    /**
+     * Change basemap when selection is done.
+     *
+     * @param item chosen basemap
+     * @return true when basemap is changed
+     */
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.World_Topo:
+                map.setBasemap(Basemap.createTopographic());
+                mTopoMenuItem.setChecked(true);
+                return true;
+            case R.id.World_Street_Map:
+                map.setBasemap(Basemap.createStreets());
+                mStreetsMenuItem.setChecked(true);
+                return true;
+            case R.id.Gray:
+                map.setBasemap(Basemap.createLightGrayCanvasVector());
+                mGrayMenuItem.setChecked(true);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
 }

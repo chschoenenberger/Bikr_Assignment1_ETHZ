@@ -8,6 +8,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.os.Vibrator;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.NotificationCompat;
 import android.util.Log;
@@ -52,6 +53,7 @@ public class Routing extends DefaultMapViewOnTouchListener {
     private Point destination = null;
     private Graphic routeGraphic = null;
     private GraphicsOverlay graphicsOverlay = mMapView.getGraphicsOverlays().get(0);
+    private Vibrator vib = null;
 
     /**
      * Default constructor
@@ -78,6 +80,7 @@ public class Routing extends DefaultMapViewOnTouchListener {
             stopRouting();
             Toast.makeText(mContext, "Previous routing task cancelled", Toast.LENGTH_SHORT).show();
         }
+        vib = (Vibrator) mContext.getSystemService(Context.VIBRATOR_SERVICE);
 
         // get the screen point where user tapped
         android.graphics.Point screenPoint = new android.graphics.Point((int) e.getX(), (int) e.getY());
@@ -96,6 +99,7 @@ public class Routing extends DefaultMapViewOnTouchListener {
                             GeoElement topmostElement = identifyLayerResult.getElements().get(0);
                             if (topmostElement instanceof Feature) {
                                 // get geometry of feature and ask for route to that feature
+                                vib.vibrate(100);
                                 Feature identifiedFeature = (Feature) topmostElement;
                                 destination = (Point) identifiedFeature.getGeometry();
                                 askForRoute(destination);
@@ -124,6 +128,9 @@ public class Routing extends DefaultMapViewOnTouchListener {
                         switch (which) {
                             case DialogInterface.BUTTON_POSITIVE:
                                 route(mMapView, mMapView.getLocationDisplay().getMapLocation(), to);
+                                if (mMapView.getLocationDisplay().getAutoPanMode() != LocationDisplay.AutoPanMode.COMPASS_NAVIGATION) {
+                                    mMapView.getLocationDisplay().setAutoPanMode(LocationDisplay.AutoPanMode.COMPASS_NAVIGATION);
+                                }
                                 break;
                             case DialogInterface.BUTTON_NEGATIVE:
                                 Toast.makeText(mContext, "Routing canceled!", Toast.LENGTH_SHORT).show();

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/World_Topo"
+            android:showAsAction="never"
+            android:title="@string/TopoMenu" />
+        <item
+            android:id="@+id/World_Street_Map"
+            android:showAsAction="never"
+            android:title="@string/StreetMapMenu" />
+        <item
+            android:id="@+id/Gray"
+            android:showAsAction="never"
+            android:title="@string/GrayMenu" />
+    </group>
+</menu>
