@@ -275,7 +275,7 @@ public class MainActivity extends AppCompatActivity implements Observer {
                 headingTxtView.setText(sensorValues[0]);
                 headingDegreeTxtView.setText(sensorValues[1]);
                 temperatureTxtView.setText(sensorValues[3]);
-                Float bearingDegree = new Float(sensorValues[2]);
+                Float bearingDegree = Float.valueOf(sensorValues[2]);
                 // Create rotate animation of imageViewHeading
                 RotateAnimation ra;
                 // the following conditional statement manages the turning direction of the rotation

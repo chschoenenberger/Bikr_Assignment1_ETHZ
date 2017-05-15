@@ -9,18 +9,7 @@ public class Trackpoint {
     private long time = 0;
 
     /**
-     * Constructor.
-     *
-     * @param longitude The longitude of this trackpoint.
-     * @param latitude  The latitude of this trackpoint.
-     */
-    public Trackpoint(double longitude, double latitude) {
-        this.longitude = longitude;
-        this.latitude = latitude;
-    }
-
-    /**
-     * Constructor with time
+     * Constructor
      *
      * @param longitude The longitude of this trackpoint.
      * @param latitude  The latitude of this trackpoint.
@@ -101,7 +90,6 @@ public class Trackpoint {
     public double speed(Trackpoint p2) {
         double dist = this.distance(p2); // in meters
         long timeDiff = Math.abs(this.time - p2.getTime()); // 1/1000s
-        double speed = dist / timeDiff * 3600;
-        return speed;
+        return dist / timeDiff * 3600;
     }
 }

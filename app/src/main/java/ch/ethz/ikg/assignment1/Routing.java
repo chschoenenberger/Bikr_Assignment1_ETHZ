@@ -406,6 +406,7 @@ public class Routing extends AppCompatActivity implements Observer {
                     }
                 }
                 // Average time is extracted from closest trackpoint
+                assert closest != null;
                 avTimeTxtView.setText(getTimeDiff(closest.getTime(), aggPath.get(0).getTime()));
                 int closestIndex = aggPath.indexOf(closest);
                 // Average speed at closest trackpoint is calculated

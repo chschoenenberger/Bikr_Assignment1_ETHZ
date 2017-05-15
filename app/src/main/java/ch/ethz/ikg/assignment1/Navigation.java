@@ -46,7 +46,7 @@ import static android.content.ContentValues.TAG;
  * layers he can navigate to it.
  */
 
-public class Navigation extends DefaultMapViewOnTouchListener {
+class Navigation extends DefaultMapViewOnTouchListener {
 
     // initialize needed variables
     private Context mContext = null;

@@ -21,10 +21,10 @@ import java.util.Observable;
  * file directly.
  */
 
-public class LocationUpdates extends Observable implements LocationListener {
+class LocationUpdates extends Observable implements LocationListener {
 
     // Create Location which stores last known location
-    Location oldLoc = null;
+    private Location oldLoc = null;
 
     // Create LocationManager to access GPS measurements
     private LocationManager locationManager;
@@ -38,9 +38,9 @@ public class LocationUpdates extends Observable implements LocationListener {
      * the locationManager and checks permissions. To do so, the current activity is passed so
      * that the method has the context and necessary information for the permission check.
      *
-     * @param activity
+     * @param activity which uses locationupdates
      */
-    protected void onStart(AppCompatActivity activity) {
+    void onStart(AppCompatActivity activity) {
         //Initialize Array which is passed to the observer
         for (int i = 0; i < 5; i++) {
             locationValues[i] = "N/A";
@@ -90,7 +90,7 @@ public class LocationUpdates extends Observable implements LocationListener {
     /**
      * This function prevents the app from further accessing the GPS sensors if it is stopped.
      */
-    protected void onStop() {
+    void onStop() {
         locationManager.removeUpdates(this);
     }
 
@@ -125,7 +125,7 @@ public class LocationUpdates extends Observable implements LocationListener {
      * @param location (current location)
      * @return acceleration in m/s^2
      */
-    public double getAcceleration(Location location) {
+    private double getAcceleration(Location location) {
         if (oldLoc != null) {
             double acceleration = ((location.getSpeed() - oldLoc.getSpeed()) / (location.getTime() - oldLoc.getTime()) * 1000);
             return acceleration;
