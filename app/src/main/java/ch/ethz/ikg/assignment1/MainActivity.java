@@ -81,6 +81,7 @@ public class MainActivity extends AppCompatActivity implements Observer {
     private ImageView headingImageView;
     private ToggleButton toggle;
     private ImageButton routingButton;
+    private ImageButton navigateButton;
     private boolean record;
 
     /**
@@ -128,13 +129,26 @@ public class MainActivity extends AppCompatActivity implements Observer {
             }
         });
 
+        // Button to start map activity with navigation.
+        navigateButton = (ImageButton) findViewById(R.id.navigateButton);
+        navigateButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                navigateButton.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY);
+                Uri uri = Uri.parse("navigate:");
+                Intent intent = new Intent(Intent.ACTION_VIEW);
+                intent.setData(uri);
+                startActivity(intent);
+            }
+        });
+
         // Button to start map activity with routing.
-        routingButton = (ImageButton) findViewById(R.id.routingButton);
+        routingButton = (ImageButton) findViewById(R.id.routeButton);
         routingButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 routingButton.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY);
-                Uri uri = Uri.parse("geo:");
+                Uri uri = Uri.parse("route:");
                 Intent intent = new Intent(Intent.ACTION_VIEW);
                 intent.setData(uri);
                 startActivity(intent);

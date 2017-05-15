@@ -14,7 +14,7 @@
         android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_above="@+id/routingButton"
+        android:layout_above="@+id/navigateButton"
         android:id="@+id/scrollView2">
 
         <RelativeLayout
@@ -284,7 +284,7 @@
     </ScrollView>
 
     <ImageButton
-        android:id="@+id/routingButton"
+        android:id="@+id/navigateButton"
         android:layout_width="60dp"
         android:layout_height="60dp"
         app:srcCompat="@drawable/ic_navigate"
@@ -305,7 +305,20 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_toLeftOf="@+id/routingButton"
-        android:layout_toStartOf="@+id/routingButton" />
+        android:layout_marginLeft="60dp"
+        android:layout_marginStart="60dp"
+        android:layout_toLeftOf="@+id/navigateButton"
+        android:layout_toStartOf="@+id/navigateButton" />
 
+
+    <ImageButton
+        android:id="@+id/routeButton"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        app:srcCompat="@drawable/ic_routing"
+        android:hapticFeedbackEnabled="true"
+        android:tint="@color/colorPrimaryDark"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
 </RelativeLayout>

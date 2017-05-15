@@ -36,6 +36,7 @@ import com.esri.arcgisruntime.symbology.SimpleRenderer;
 public class Map extends AppCompatActivity {
 
     private ArcGISMap map = null;
+    private MapView mapView = null;
     private GraphicsOverlay graphicsOverlay = new GraphicsOverlay();
     // initialize symbols
     private PictureMarkerSymbol rentalSymbol = null;
@@ -57,10 +58,10 @@ public class Map extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_routing);
+        setContentView(R.layout.activity_navigation);
 
         // initialize MapView with Map including basemap and graphicsOverlay
-        final MapView mapView = (MapView) findViewById(R.id.mapView);
+        mapView = (MapView) findViewById(R.id.mapView);
 
         // In a future version, an option menu could be displayed to select the basemaps
         map = new ArcGISMap(Basemap.Type.TOPOGRAPHIC, 47.391629, 8.522529, 12);
@@ -112,7 +113,7 @@ public class Map extends AppCompatActivity {
         });
 
         // create onTouchlisteer which reacts to longpress to start navigating
-        mapView.setOnTouchListener(new Routing(this, mapView));
+        mapView.setOnTouchListener(new Navigation(this, mapView));
 
         mapView.addMapRotationChangedListener(new MapRotationChangedListener() {
             @Override
@@ -128,7 +129,6 @@ public class Map extends AppCompatActivity {
                 }
             }
         });
-
     }
 
     /**

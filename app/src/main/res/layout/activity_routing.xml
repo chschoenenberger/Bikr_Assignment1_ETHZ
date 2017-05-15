@@ -4,53 +4,183 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="ch.ethz.ikg.assignment1.Map">
+    android:background="@color/colorPrimaryDark"
+    tools:context="ch.ethz.ikg.assignment1.Routing">
 
-    <com.esri.arcgisruntime.mapping.view.MapView
-        android:id="@+id/mapView"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent" />
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/progressBar">
 
+        <com.esri.arcgisruntime.mapping.view.MapView
+            android:id="@+id/mapView2"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_above="@+id/northButton2" />
 
-    <!--<Button
-        android:id="@+id/centerButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        <ImageButton
+            android:id="@+id/northButton2"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:layout_above="@+id/centerButton2"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:tint="@color/colorPrimaryDark"
+            app:srcCompat="@drawable/ic_north" />
+
+        <ImageButton
+            android:id="@+id/centerButton2"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:tint="@color/colorPrimaryDark"
+            app:srcCompat="@drawable/ic_center" />
+
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/mapView2"
+            android:background="@color/colorPrimaryDark"
+            android:paddingTop="5dp"
+            android:text="@string/trackInfo"
+            android:textAllCaps="false"
+            android:textColor="@color/textColor"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/average"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/title"
+            android:layout_marginLeft="13dp"
+            android:layout_marginStart="13dp"
+            android:layout_toEndOf="@+id/Speed"
+            android:layout_toRightOf="@+id/Speed"
+            android:paddingBottom="5dp"
+            android:paddingTop="5dp"
+            android:text="@string/average"
+            android:textColor="@color/textColor"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/you"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/average"
+            android:layout_alignBottom="@+id/average"
+            android:layout_marginLeft="46dp"
+            android:layout_marginStart="46dp"
+            android:layout_toEndOf="@+id/average"
+            android:layout_toRightOf="@+id/average"
+            android:paddingBottom="5dp"
+            android:paddingTop="5dp"
+            android:text="@string/you"
+            android:textColor="@color/textColor"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/Speed"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/average"
+            android:layout_marginLeft="5dp"
+            android:paddingBottom="5dp"
+            android:paddingTop="5dp"
+            android:text="Speed"
+            android:textColor="@color/textColor"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/Time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/Speed"
+            android:layout_alignStart="@+id/Speed"
+            android:layout_below="@+id/Speed"
+            android:paddingBottom="2dp"
+            android:paddingTop="5dp"
+            android:text="Time"
+            android:textColor="@color/textColor"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/avSpeed"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/Speed"
+            android:layout_alignLeft="@+id/average"
+            android:layout_alignStart="@+id/average"
+            android:paddingBottom="5dp"
+            android:paddingTop="5dp"
+            android:text="@string/avSpeed"
+            android:textColor="@color/textColor"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/avTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/Time"
+            android:layout_alignLeft="@+id/avSpeed"
+            android:layout_alignStart="@+id/avSpeed"
+            android:paddingBottom="2dp"
+            android:paddingTop="5dp"
+            android:text="@string/avTime"
+            android:textColor="@color/textColor"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/yourSpeed"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/Speed"
+            android:layout_alignLeft="@+id/you"
+            android:layout_alignStart="@+id/you"
+            android:paddingBottom="5dp"
+            android:paddingTop="5dp"
+            android:text="@string/yourSpeed"
+            android:textColor="@color/textColor"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/yourTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/Time"
+            android:layout_alignLeft="@+id/yourSpeed"
+            android:layout_alignStart="@+id/yourSpeed"
+            android:paddingBottom="2dp"
+            android:paddingTop="5dp"
+            android:text="@string/yourTime"
+            android:textColor="@color/textColor"
+            android:textSize="16sp" />
+    </RelativeLayout>
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="match_parent"
+        android:layout_height="5dp"
         android:layout_alignParentBottom="true"
-        android:text="@string/centerButton"
-        android:textSize="15sp"
-        android:textStyle="bold"
-        android:hapticFeedbackEnabled="true" />
-
-    <Button
-        android:id="@+id/northButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentLeft="true"
         android:layout_alignParentRight="true"
-        android:text="@string/northButton"
-        android:textSize="15sp"
-        android:textStyle="bold"
-        android:hapticFeedbackEnabled="true"/>-->
-
-    <ImageButton
-        android:id="@+id/northButton"
-        android:layout_width="70dp"
-        android:layout_height="70dp"
-        app:srcCompat="@drawable/ic_north"
-        android:tint="@color/colorPrimaryDark"
-        android:layout_above="@+id/centerButton"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true" />
-
-    <ImageButton
-        android:id="@+id/centerButton"
-        android:layout_width="70dp"
-        android:layout_height="70dp"
-        app:srcCompat="@drawable/ic_center"
-        android:tint="@color/colorPrimaryDark"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true" />
+        android:layout_alignParentStart="true"
+        android:indeterminate="false"
+        android:progressBackgroundTint="@color/colorPrimaryDark"
+        android:progressTint="@color/colorPrimary"
+        android:progressTintMode="src_atop" />
 
 </RelativeLayout>

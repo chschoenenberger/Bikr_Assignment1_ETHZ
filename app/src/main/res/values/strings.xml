@@ -26,5 +26,12 @@
     <string name="StreetMapMenu">Streets</string>
     <string name="TopoMenu">Topographic</string>
     <string name="GrayMenu">Gray</string>
+    <string name="average">Average</string>
+    <string name="you">You</string>
+    <string name="yourTime">N/A</string>
+    <string name="yourSpeed">N/A</string>
+    <string name="avTime">N/A</string>
+    <string name="avSpeed">N/A</string>
+    <string name="trackInfo"><u>Track Info</u></string>
 
 </resources>
