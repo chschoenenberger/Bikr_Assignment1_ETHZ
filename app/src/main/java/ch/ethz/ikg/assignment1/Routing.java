@@ -1,6 +1,7 @@
 package ch.ethz.ikg.assignment1;
 
 import android.graphics.Color;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -78,7 +79,9 @@ public class Routing extends AppCompatActivity implements Observer {
     private List<Trackpoint> aggPath;
 
     // initialize starting time of app
-    private long startTime;
+    private long startTime = 0;
+    // Creates handler for timer
+    Handler timerHandler = new Handler();
 
     // initialize locationUpdates to access user-speed and get according measures of aggregated path
     private LocationUpdates locationUpdates = new LocationUpdates();
@@ -115,6 +118,8 @@ public class Routing extends AppCompatActivity implements Observer {
 
         // Set starting time on creation
         startTime = DateTime.now().getMillis();
+        // start timer
+        timerHandler.postDelayed(timerRunnable, 0);
 
         // This is needed for the GPX parser.
         JodaTimeAndroid.init(this);
@@ -329,6 +334,8 @@ public class Routing extends AppCompatActivity implements Observer {
     protected void onPause() {
         super.onPause();
         locationUpdates.deleteObserver(this);
+        // stop timer
+        timerHandler.removeCallbacks(timerRunnable);
     }
 
     /**
@@ -392,7 +399,6 @@ public class Routing extends AppCompatActivity implements Observer {
             if (o instanceof LocationUpdates) {
                 String[] locationValues = (String[]) arg;
                 youSpeedTxtView.setText(locationValues[2]);
-                youTimeTxtView.setText(getTimeDiff(DateTime.now().getMillis(), startTime));
                 // current location is stored as trackpoint to ease further calculations
                 Trackpoint current = new Trackpoint(Double.valueOf(locationValues[1]), Double.valueOf(locationValues[0]), DateTime.now().getMillis());
                 // min distance is initialized
@@ -432,4 +438,23 @@ public class Routing extends AppCompatActivity implements Observer {
     public int getMaxDist() {
         return (int) aggPath.get(0).distance(aggPath.get(aggPath.size() - 1));
     }
+
+    /**
+     * This object is the timer, which will update the user's time on the display every second.
+     */
+    Runnable timerRunnable = new Runnable() {
+
+        @Override
+        public void run() {
+            long millis = System.currentTimeMillis() - startTime;
+            int seconds = (int) (millis / 1000);
+            int minutes = seconds / 60;
+            seconds = seconds % 60;
+
+            youTimeTxtView.setText(String.format("%d:%02d", minutes, seconds));
+
+            // calls itself every 500ms to update the youTimeTxtView with the current time.
+            timerHandler.postDelayed(this, 500);
+        }
+    };
 }
